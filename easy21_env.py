@@ -2,13 +2,15 @@ from card import Card
 from state import State
 import numpy as np
 
-# Playable Actions
+DECK = np.arange(1,11)
 ACTIONS = (HIT, STICK) = (0, 1)
+V_SHAPE = len(DECK), 21
+Q_SHAPE = len(DECK), 21, len(ACTIONS)
 
 def draw_card():
         if np.random.rand() > (1/3):
-            return np.random.randint(1, 11)
-        return -np.random.randint(1, 11)
+            return np.random.choice(DECK)
+        return -np.random.choice(DECK)
 
 def bust(sum):
     return sum > 21 or sum < 1
@@ -16,7 +18,7 @@ def bust(sum):
 class Easy21Env:
 
     def reset(self):
-        self.state = State(np.random.randint(1,11), np.random.randint(1,11))
+        self.state = State(np.random.choice(DECK), np.random.choice(DECK))
         self.reward = 0
 
     def __init__(self):

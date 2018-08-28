@@ -2,10 +2,6 @@ from easy21_env import ACTIONS
 import numpy as np
 
 
-def get_Q(Q, state, action):
-    return Q[state.dealer_card-1, state.player_sum-1, action]
-
-
 def get_epsilon(N0, Ns, state):
     return N0 / (N0 + Ns[state.dealer_card-1, state.player_sum-1])
 
@@ -18,7 +14,7 @@ def epsilon_greedy_policy(epsilon, Q, state):
     else:
         return np.random.choice(ACTIONS)
 
-# ------------------------------------
+# ---------------------------------------------------
 
 
 import matplotlib
@@ -60,8 +56,35 @@ def plot_V(Q, save=None, fig_idx=0):
     plt.xlabel('dealer', size=18)
 
     if save is not None:
-        plt.savefig(save, format='pdf', transparent=True)
+        plt.savefig(save, format="png", transparent=True)
     else:
         plt.show()
 
     plt.clf()
+
+# ---------------------------------------------------
+
+
+def save_nd_arr(path, arr):
+    # Write the array to disk
+    with open(path, 'w') as outfile:
+        # I'm writing a header here just for the sake of readability
+        # Any line starting with "#" will be ignored by numpy.loadtxt
+        outfile.write('# Array shape: {0}\n'.format(arr.shape))
+
+        # Iterating through a ndimensional array produces slices along
+        # the last axis. This is equivalent to data[i,:,:] in this case
+        i = 0
+        for data_slice in arr:
+            # Writing out a break to indicate different slices...
+            outfile.write('# Slice {}\n'.format(i))
+
+            # The formatting string indicates that I'm writing out
+            # the values in left-justified columns 7 characters in width
+            # with 2 decimal places.
+            np.savetxt(outfile, data_slice, fmt='%s')
+            i += 1
+
+
+def load_nd_arr(path, shape):
+    return np.loadtxt(path).reshape(shape)

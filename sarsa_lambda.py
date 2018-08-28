@@ -1,5 +1,5 @@
 from easy21_env import Easy21Env, V_SHAPE, Q_SHAPE
-from utils import get_Q, get_epsilon, epsilon_greedy_policy, plot_V
+from utils import get_epsilon, epsilon_greedy_policy, plot_V, save_nd_arr, load_nd_arr
 import numpy as np
 
 
@@ -79,13 +79,22 @@ class SarsaLambda:
 
             print("-------------------------------------------------------")
 
-        print("Wins: " + str(self.wins))
-        print("Losses: " + str(self.losses))
-        print("Win to Lose ratio: " + str(self.wins / self.losses))
-        print("Draws: " + str(self.draws))
-        np.savetxt("Q_sarsa_" + str(self.lmbd) + "_" + str(self.num_episodes) + ".csv", self.Q, delimiter=",")
-        plot_V(self.Q)
+        info = "Wins: {}\nLosses: {}\nWin to Lose ratio: {}\nDraws: {}".format(self.wins, self.losses,
+                                                                               (self.wins / self.losses), self.draws)
+        print(info)
 
+        path = "results/sarsa_{}_{}".format(self.lmbd, self.num_episodes)
 
-agent = SarsaLambda(1000, 1, 0)
-agent.learn()
+        with open(path + '_info.txt', 'a') as the_file:
+            the_file.write(info)
+
+        save_nd_arr(path + "_Q.txt", self.Q)
+
+        plot_V(self.Q, save=path + "_V_plot.png")
+
+# Training 200000 episodes for each parameter value lambda in {0, 0.1, 0.2, ..., 1}
+lmbd_values = {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1}
+
+for lmbd in lmbd_values:
+    agent = SarsaLambda(200000, 1, lmbd)
+    agent.learn()

@@ -1,0 +1,4 @@
+Wins: 103334
+Losses: 96081
+Win to Lose ratio: 1.0754883900042673
+Draws: 585

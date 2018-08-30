@@ -1,6 +1,7 @@
-from easy21_env import Easy21Env, V_SHAPE, Q_SHAPE
-from utils import get_epsilon, epsilon_greedy_policy, plot_V, save_nd_arr, load_nd_arr
 import numpy as np
+from easy21_env import Easy21Env, V_SHAPE, Q_SHAPE
+from utils import get_epsilon, epsilon_greedy_policy, plot_V, save_nd_arr,
+load_nd_arr
 
 
 class SarsaLambda:
@@ -79,8 +80,9 @@ class SarsaLambda:
 
             print("-------------------------------------------------------")
 
-        info = "Wins: {}\nLosses: {}\nWin to Lose ratio: {}\nDraws: {}".format(self.wins, self.losses,
-                                                                               (self.wins / self.losses), self.draws)
+        info = "Wins: {}\nLosses: {}\nWin to Lose ratio: {}\nDraws: {}"
+        info = info.format(self.wins, self.losses, (self.wins / self.losses),
+                           self.draws)
         print(info)
 
         path = "results/sarsa_{}_{}".format(self.lmbd, self.num_episodes)
@@ -90,9 +92,10 @@ class SarsaLambda:
 
         save_nd_arr(path + "_Q.txt", self.Q)
 
-        plot_V(self.Q, save=path + "_V_plot.png")
+        plot_V(np.max(self.Q, axis=2), save=path + "_V_plot.png")
 
-# Training 200000 episodes for each parameter value lambda in {0, 0.1, 0.2, ..., 1}
+# Training 200000 episodes for each parameter value
+# lambda in {0, 0.1, 0.2, ..., 1}
 lmbd_values = {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1}
 
 for lmbd in lmbd_values:

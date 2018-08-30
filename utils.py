@@ -1,5 +1,11 @@
 from easy21_env import ACTIONS
 import numpy as np
+from pprint import pprint
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm, rc
+import matplotlib
+matplotlib.use("TkAgg")
 
 
 def get_epsilon(N0, Ns, state):
@@ -14,20 +20,21 @@ def epsilon_greedy_policy(epsilon, Q, state):
     else:
         return np.random.choice(ACTIONS)
 
+
+def sample_policy_action(num_actions, probs):
+    """
+    Sample an action from an action probability distribution output by
+    the policy network.
+    """
+    # Subtract a tiny value from probabilities in order to avoid
+    # "ValueError: sum(pvals[:-1]) > 1.0" in numpy.multinomial
+    probs = probs - np.finfo(np.float32).epsneg
+
+    histogram = np.random.multinomial(1, probs)
+    action_index = int(np.nonzero(histogram)[0])
+    return action_index
+
 # ---------------------------------------------------
-
-
-import matplotlib
-matplotlib.use("TkAgg")
-
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib import cm, rc
-# rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
-# rc('text', usetex=True)
-import matplotlib.pyplot as plt
-
-import numpy as np
-from pprint import pprint
 
 
 def create_surf_plot(X, Y, Z, fig_idx=1):
@@ -45,8 +52,7 @@ DEALER_RANGE = range(1, 11)
 PLAYER_RANGE = range(1, 22)
 
 
-def plot_V(Q, save=None, fig_idx=0):
-    V = np.max(Q, axis=2)
+def plot_V(V, save=None, fig_idx=0):
     X, Y = np.mgrid[DEALER_RANGE, PLAYER_RANGE]
 
     surf = create_surf_plot(X, Y, V)
